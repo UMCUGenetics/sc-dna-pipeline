@@ -25,7 +25,7 @@ AC_PATH_PROG(RSCRIPT, Rscript, Rscript)
 
 dnl Check for the availability of R packages.
 dnl ---------------------------------------------------------------------------
-AX_R_PACKAGE([ggplot2])
+AX_R_PACKAGE([getopt])
 AX_R_PACKAGE([AneuFinder])
 AX_R_PACKAGE([USCDtools])
 

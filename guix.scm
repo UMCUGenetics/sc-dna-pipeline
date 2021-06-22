@@ -15,6 +15,7 @@
 
 (use-modules (guix packages)
              ((guix licenses) #:prefix license:)
+             (gnu packages autotools)
              (gnu packages bioconductor)
              (gnu packages cran)
              (gnu packages statistics)
@@ -109,15 +110,33 @@ sc-dna-pipeline.")
    (name "sc-dna-pipeline")
    (version "1.0")
    (source (origin
-            (method url-fetch)
-            (uri (string-append "file://" (getcwd)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/UMCUGenetics/sc-dna-pipeline.git")
+                  (commit "d6469869a6c49739d57aa7936dbd918c3c09126b")))
             (sha256
-             (base32 "0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))
-   (build-system r-build-system)
+             (base32 "10llj69pwcr4pm0p3pykb3pazqfx265imlgpcmhyxpy47jjn77xl"))))
+   (build-system gnu-build-system)
+   (arguments
+    `(#:tests? #f ; There are no tests.
+      #:phases
+      (modify-phases %standard-phases
+        (delete 'build) ; The code is a single R script.
+        (replace 'install
+          (lambda* (#:key inputs outputs #:allow-other-keys)
+            (let* ((out (assoc-ref outputs "out"))
+                   (bin (string-append out "/bin")))
+              (mkdir-p bin)
+              (install-file "sc-dna-pipeline" bin)))))))
+   (native-inputs
+    `(("autoconf" ,autoconf)
+      ("automake" ,automake)
+      ("libtool" ,libtool)))
    (inputs
     `(("r" ,r-minimal)))
    (propagated-inputs
-    `(("r-uscdtools" ,r-uscdtools)
+    `(("r-getopt" ,r-getopt)
+      ("r-uscdtools" ,r-uscdtools)
       ("r-aneufinder" ,r-aneufinder-umcu)))
    (home-page "https://github.com/UMCUGenetics/sc-dna-pipeline/")
    (synopsis #f)
