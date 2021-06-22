@@ -1,0 +1,151 @@
+#!@RSCRIPT@ --vanilla
+
+## Effectively disable scientific notation.
+options(scipen=9999)
+
+## ----------------------------------------------------------------------------
+## COMMAND-LINE ARGUMENTS
+## ----------------------------------------------------------------------------
+
+library(getopt, quietly=TRUE, warn.conflicts = FALSE)
+
+spec = matrix(c(
+  'blacklist-binsize',  'b', 1, "numeric",
+  'calling-binsize',    'c', 1, "numeric",
+  'help',               'h', 0, "logical",
+  'output-directory',   'o', 1, "character",
+  'reference-bsgenome', 'g', 1, "character",
+  'samplesheet',        'i', 1, "character",
+  'threads',            't', 1, "numeric"
+), byrow=TRUE, ncol=4)
+
+opt = getopt(spec)
+
+## Help message.
+if (! is.null(opt$help) ) {
+    cat(paste0("This is sc-dna-pipeline.\n\n",
+               "  --blacklist-binsize=ARG,  -b  Binning size in bp to determine outlier regions.\n",
+               "  --calling-binsize=ARG,    -c  Copy-number calling bin size in bp to use.\n",
+               "  --help,                   -h  This message.\n",
+               "  --output-directory=ARG,   -o  Directory to store the pipeline's output.\n",
+               "  --reference-bsgenome=ARG, -g  BSGenome R package to use as reference genome.\n",
+               "  --samplesheet=ARG,        -i  Path to the samplesheet.\n",
+               "  --threads=ARG,            -t  Number of threads to use.\n"))
+    quit()
+}
+
+## Handle required options without defaults.
+if (is.null(opt[["samplesheet"]])) {
+    cat(paste0("Please provide a --samplesheet.\n"))
+    quit(status=1)
+}
+
+if (!file.exists(opt[["samplesheet"]])) {
+    cat(paste0("The file '", opt[["samplesheet"]] ,"' does not exist.\n"))
+    quit()
+} else {
+    opt[["samplesheet"]] <- normalizePath(opt[["samplesheet"]])
+}
+
+## Set reasonable defaults for the options that are needed, but were not specified.
+if (is.null(opt[["output-directory"]])) {
+    outdir = paste0(getwd(), "/output")
+    dir.create(outdir, showWarnings = FALSE)
+    opt[["output-directory"]] = outdir
+} else {
+    dir.create(opt[["output-directory"]], showWarnings = FALSE)
+    opt[["output-directory"]] <- normalizePath(opt[["output-directory"]])
+}
+
+if (is.null(opt[["blacklist-binsize"]])) { opt[["blacklist-binsize"]] = 100000 }
+if (is.null(opt[["calling-binsize"]]))   { opt[["calling-binsize"]] = 1000000 }
+if (is.null(opt[["threads"]]))           { opt[["threads"]] = 48 }
+if (is.null(opt[["reference-bsgenome"]])) {
+    opt[["reference-bsgenome"]] = "BSgenome.Btaurus.UCSC.bosTau8"
+}
+
+cat(paste0("Sample sheet:     ", opt[["samplesheet"]], "\n"))
+cat(paste0("Output directory: ", opt[["output-directory"]], "\n"))
+cat(paste0("Reference genome: ", opt[["reference-bsgenome"]], "\n"))
+
+## ----------------------------------------------------------------------------
+## LOAD PREREQUISITES
+## ----------------------------------------------------------------------------
+
+cat(paste0("Loading packages ...\n"))
+suppressMessages(library(AneuFinder, quietly=TRUE))
+suppressMessages(library(USCDtools, quietly=TRUE))
+suppressMessages(library(opt[["reference-bsgenome"]], character.only=TRUE))
+suppressMessages(library(parallel, quietly=TRUE, warn.conflicts = FALSE))
+
+## ----------------------------------------------------------------------------
+## RUN
+## ----------------------------------------------------------------------------
+
+cat(paste0("Reading samplesheets ...\n"))
+samplesheet <- read.table(opt[["samplesheet"]], sep='\t', header=TRUE)
+
+cat(paste0("Going to process ", length(samplesheet[["cell"]]),
+           " cells from ",      length(unique(samplesheet[["donor"]])),
+           " donors, with ",    length(unique(samplesheet[["condition"]])),
+           " conditions.\n"))
+
+cat(paste0("Running the Configure phase ...\n"))
+
+log.stdout.file <- paste0(opt[["output-directory"]], "/Configure.out")
+log.stderr.file <- paste0(opt[["output-directory"]], "/Configure.errors")
+sink(file=log.stdout.file, type = "output")
+sink(file=NULL, type = "message")
+
+runAneufinderForSamplesheet (opt[["output-directory"]],
+                             samplesheet,
+                             opt[["blacklist-binsize"]],
+                             opt[["calling-binsize"]],
+                             BSgenome.Btaurus.UCSC.bosTau8,
+                             c(1:29),
+                             c("X", "Y"),
+                             applySequenceabilityFactors = TRUE,
+                             numCPU = 48,
+                             plotting = FALSE)
+
+blacklist.file       <- paste0(opt[["output-directory"]], "/blacklist_",
+                               opt[["blacklist-binsize"]], ".bed.gz")
+sequenceability.file <- paste0(opt[["output-directory"]], "/sequenceability.factors.",
+                               opt[["calling-binsize"]], ".gc.RData")
+
+sink()
+log.stdout.file <- paste0(opt[["output-directory"]], "/Calling.out")
+log.stderr.file <- paste0(opt[["output-directory"]], "/Calling.errors")
+sink(file=log.stdout.file, type = "output")
+sink(file=NULL, type = "message")
+
+excluded_samples  <- excludedCells (opt[["output-directory"]], samplesheet, plotOverlap=TRUE)
+final_samplesheet <- removeCellsFromSamplesheet(samplesheet, excluded_samples)
+
+cat(paste0("Excluded samples:\n"))
+for (sample in excluded_samples) { cat(paste0("  - ", sample, "\n")) }
+
+## findRecurringEvents
+##findRecurringEvents (opt[["output-directory"]], samplesheet, numCPU=4)
+## modify AnueFinder segments output.
+
+sink()
+log.stdout.file <- paste0(opt[["output-directory"]], "/Plotting.out")
+log.stderr.file <- paste0(opt[["output-directory"]], "/Plotting.errors")
+sink(file=log.stdout.file, type = "output")
+sink(file=NULL, type = "message")
+
+runAneufinderForSamplesheet (opt[["output-directory"]],
+                             final_samplesheet,
+                             opt[["blacklist-binsize"]],
+                             opt[["calling-binsize"]],
+                             BSgenome.Btaurus.UCSC.bosTau8,
+                             c(1:29),
+                             c("X", "Y"),
+                             applySequenceabilityFactors = TRUE,
+                             numCPU = 48,
+                             plotting = TRUE)
+
+
+sink(type="output")
+sink(type="message")
