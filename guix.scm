@@ -132,10 +132,9 @@ sc-dna-pipeline.")
     `(("autoconf" ,autoconf)
       ("automake" ,automake)
       ("libtool" ,libtool)))
-   (inputs
-    `(("r" ,r-minimal)))
    (propagated-inputs
-    `(("r-getopt" ,r-getopt)
+    `(("r" ,r-minimal)
+      ("r-getopt" ,r-getopt)
       ("r-uscdtools" ,r-uscdtools)
       ("r-aneufinder" ,r-aneufinder-umcu)))
    (home-page "https://github.com/UMCUGenetics/sc-dna-pipeline/")
