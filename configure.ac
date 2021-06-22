@@ -15,7 +15,6 @@ dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
 dnl -*- Autoconf -*-
 
 AC_INIT(sc-dna-pipeline, 1.0.0)
-AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_FILES([sc-dna-pipeline], [chmod +x sc-dna-pipeline])
@@ -28,7 +27,7 @@ dnl Check for the availability of R packages.
 dnl ---------------------------------------------------------------------------
 AX_R_PACKAGE([ggplot2])
 AX_R_PACKAGE([AneuFinder])
-AX_R_PACKAGE([USCDTools])
+AX_R_PACKAGE([USCDtools])
 
 dnl Check for presence of 'pdflatex', 'bibtex', and 'htlatex'.
 dnl ---------------------------------------------------------------------------
