@@ -68,11 +68,11 @@ cat(paste0("Sample sheet:     ", opt[["samplesheet"]], "\n"))
 cat(paste0("Output directory: ", opt[["output-directory"]], "\n"))
 cat(paste0("Reference genome: ", opt[["reference-bsgenome"]], "\n"))
 
+autosomes <- c(1:22)
+allosomes <- c("X", "Y")
+
 if (opt[["reference-bsgenome"]] == "BSgenome.Btaurus.UCSC.bosTau8") {
     autosomes <- c(1:29)
-    allosomes <- c("X", "Y")
-} else {
-    autosomes <- c(1:22)
     allosomes <- c("X", "Y")
 }
 
@@ -113,7 +113,7 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              autosomes,
                              allosomes,
                              applySequenceabilityFactors = TRUE,
-                             numCPU = 32,
+                             numCPU = opt[["threads"]],
                              plotting = FALSE)
 
 blacklist.file       <- paste0(opt[["output-directory"]], "/blacklist_",
