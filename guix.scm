@@ -37,10 +37,10 @@
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/UMCUGenetics/aneufinder.git")
-                   (commit "67346eb8597a6328fdf186261f88815fe881271f")))
+                   (commit "c6cc4150f26da2966e22233168530cd4afac37ca")))
              (sha256
               (base32
-               "0dxpqibmlm01jzjl8kif1077gr20k1ssrzj8b3la41x4s1p96mgl"))))
+               "12ygw3y9z01l9d2qlp5dq3pba58hs6w2qiv8r81riq72mzvsvp7r"))))
     (build-system r-build-system)
     (native-inputs
      `(("r-knitr" ,r-knitr)))
@@ -81,10 +81,10 @@ instead.")
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/UMCUGenetics/USCDtools.git")
-                  (commit "dd6bc7128150291a03addf2e7a68c16241de6e49")))
+                  (commit "6a555bbc328c89c599526112aac036a420f10d9b")))
             (sha256
              (base32
-              "11gnmmmjcim3nk0vc0zgfccwmfmbmxp39nk6q8zhn1450akmf9l8"))))
+              "08swm58yyjwcv28lzlq0w2pghvzaymcwqx794nr6mfk6pcw6ang4"))))
    (build-system r-build-system)
    (native-inputs
     `(("r-knitr" ,r-knitr)))

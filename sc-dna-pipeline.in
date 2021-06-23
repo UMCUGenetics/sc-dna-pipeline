@@ -113,7 +113,7 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              autosomes,
                              allosomes,
                              applySequenceabilityFactors = TRUE,
-                             numCPU = 48,
+                             numCPU = 32,
                              plotting = FALSE)
 
 blacklist.file       <- paste0(opt[["output-directory"]], "/blacklist_",
@@ -151,7 +151,7 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              autosomes,
                              allosomes,
                              applySequenceabilityFactors = TRUE,
-                             numCPU = 48,
+                             numCPU = opt[["threads"]],
                              plotting = TRUE)
 
 
