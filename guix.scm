@@ -113,9 +113,9 @@ sc-dna-pipeline.")
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/UMCUGenetics/sc-dna-pipeline.git")
-                  (commit "e33e6f1d94cd49595bf4cdb0a68952e975432b74")))
+                  (commit "3eb6eeab4dd813f195237c8a14bf6b35a074d12e")))
             (sha256
-             (base32 "0m76y809h8373ch6lhx704xc0mf09k6hrki1w0q4xfiiklpfwgdh"))))
+             (base32 "1g87n7y6zwb8813krjmldawnn4qb4yjs2xfk9ldpak5y5lsp00j1"))))
    (build-system gnu-build-system)
    (arguments
     `(#:tests? #f ; There are no tests.
