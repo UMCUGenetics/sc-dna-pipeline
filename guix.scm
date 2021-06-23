@@ -81,10 +81,10 @@ instead.")
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/UMCUGenetics/USCDtools.git")
-                  (commit "6a555bbc328c89c599526112aac036a420f10d9b")))
+                  (commit "2105e326b53d2163bf6a3ef29d789387b964107a")))
             (sha256
              (base32
-              "08swm58yyjwcv28lzlq0w2pghvzaymcwqx794nr6mfk6pcw6ang4"))))
+              "1bqp997asd86nd1jaqkqhnapgd4wj9hh4h8h6mdl6p8dm5z8sj27"))))
    (build-system r-build-system)
    (native-inputs
     `(("r-knitr" ,r-knitr)))
