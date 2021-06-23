@@ -68,6 +68,14 @@ cat(paste0("Sample sheet:     ", opt[["samplesheet"]], "\n"))
 cat(paste0("Output directory: ", opt[["output-directory"]], "\n"))
 cat(paste0("Reference genome: ", opt[["reference-bsgenome"]], "\n"))
 
+if (opt[["reference-bsgenome"]] == "BSgenome.Btaurus.UCSC.bosTau8") {
+    autosomes <- c(1:29)
+    allosomes <- c("X", "Y")
+} else {
+    autosomes <- c(1:22)
+    allosomes <- c("X", "Y")
+}
+
 ## ----------------------------------------------------------------------------
 ## LOAD PREREQUISITES
 ## ----------------------------------------------------------------------------
@@ -101,9 +109,9 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              samplesheet,
                              opt[["blacklist-binsize"]],
                              opt[["calling-binsize"]],
-                             BSgenome.Btaurus.UCSC.bosTau8,
-                             c(1:29),
-                             c("X", "Y"),
+                             get(opt[["reference-bsgenome"]]),
+                             autosomes,
+                             allosomes,
                              applySequenceabilityFactors = TRUE,
                              numCPU = 48,
                              plotting = FALSE)
@@ -139,9 +147,9 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              final_samplesheet,
                              opt[["blacklist-binsize"]],
                              opt[["calling-binsize"]],
-                             BSgenome.Btaurus.UCSC.bosTau8,
-                             c(1:29),
-                             c("X", "Y"),
+                             get(opt[["reference-bsgenome"]]),
+                             autosomes,
+                             allosomes,
                              applySequenceabilityFactors = TRUE,
                              numCPU = 48,
                              plotting = TRUE)
