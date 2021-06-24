@@ -12,6 +12,7 @@ library(getopt, quietly=TRUE, warn.conflicts = FALSE)
 spec = matrix(c(
   'blacklist-binsize',       'b', 1, "numeric",
   'calling-binsize',         'c', 1, "numeric",
+  'stepsize',                's', 1, "numeric",
   'help',                    'h', 0, "logical",
   'output-directory',        'o', 1, "character",
   'reference-bsgenome',      'g', 1, "character",
@@ -27,16 +28,17 @@ opt = getopt(spec)
 ## Help message.
 if (! is.null(opt$help) ) {
     cat(paste0("This is sc-dna-pipeline.\n\n",
-               "  --blacklist-binsize=ARG,  -b  Binning size in bp to determine outlier regions.\n",
-               "  --calling-binsize=ARG,    -c  Copy-number calling bin size in bp to use.\n",
-               "  --help,                   -h  This message.\n",
-               "  --output-directory=ARG,   -o  Directory to store the pipeline's output.\n",
-               "  --reference-bsgenome=ARG, -g  BSGenome R package to use as reference genome.\n",
-               "  --samplesheet=ARG,        -i  Path to the samplesheet.\n",
-               "  --threads=ARG,            -t  Number of threads to use.\n",
-               "  --minimum-number-of-reads -m  Exclude cells with less reads than this.\n",
-               "  --bhattacharyya-threshold -B  Percentage of worst cells to exclude.\n",
-               "  --spikiness-threshold     -S  Percentage of worst cells to exclude.\n"))
+               "  --blacklist-binsize=ARG,      -b  Binning size in bp to determine outlier regions.\n",
+               "  --calling-binsize=ARG,        -c  Copy-number calling bin size in bp to use.\n",
+               "  --stepsize=ARG,               -s  Copy-number calling step size in bp to use.\n",
+               "  --help,                       -h  This message.\n",
+               "  --output-directory=ARG,       -o  Directory to store the pipeline's output.\n",
+               "  --reference-bsgenome=ARG,     -g  BSGenome R package to use as reference genome.\n",
+               "  --samplesheet=ARG,            -i  Path to the samplesheet.\n",
+               "  --threads=ARG,                -t  Number of threads to use.\n",
+               "  --minimum-number-of-reads=ARG -m  Exclude cells with less reads than this.\n",
+               "  --bhattacharyya-threshold=ARG -B  Percentage of worst cells to exclude.\n",
+               "  --spikiness-threshold=ARG     -S  Percentage of worst cells to exclude.\n"))
     quit()
 }
 
@@ -65,6 +67,7 @@ if (is.null(opt[["output-directory"]])) {
 
 if (is.null(opt[["blacklist-binsize"]])) { opt[["blacklist-binsize"]] = 100000 }
 if (is.null(opt[["calling-binsize"]]))   { opt[["calling-binsize"]] = 1000000 }
+if (is.null(opt[["stepsize"]]))          { opt[["stepsize"]] = 1000000 }
 if (is.null(opt[["threads"]]))           { opt[["threads"]] = 48 }
 if (is.null(opt[["minimum-number-of-reads"]])) { opt[["minimum-number-of-reads"]] = 200000 }
 if (is.null(opt[["bhattacharyya-threshold"]])) { opt[["bhattacharyya-threshold"]] = 10 }
@@ -118,6 +121,7 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              samplesheet,
                              opt[["blacklist-binsize"]],
                              opt[["calling-binsize"]],
+                             opt[["stepsize"]],
                              get(opt[["reference-bsgenome"]]),
                              autosomes,
                              allosomes,
@@ -159,6 +163,7 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              final_samplesheet,
                              opt[["blacklist-binsize"]],
                              opt[["calling-binsize"]],
+                             opt[["stepsize"]],
                              get(opt[["reference-bsgenome"]]),
                              autosomes,
                              allosomes,
