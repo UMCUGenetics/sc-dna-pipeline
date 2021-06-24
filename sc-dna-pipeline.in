@@ -21,6 +21,7 @@ spec = matrix(c(
   'minimum-number-of-reads', 'm', 1, "numeric",
   'bhattacharyya-threshold', 'B', 1, "numeric",
   'spikiness-threshold',     'S', 1, "numeric"
+  'disable-sf',              'a', 0, "logical",
 ), byrow=TRUE, ncol=4)
 
 opt = getopt(spec)
@@ -167,7 +168,7 @@ runAneufinderForSamplesheet (opt[["output-directory"]],
                              get(opt[["reference-bsgenome"]]),
                              autosomes,
                              allosomes,
-                             applySequenceabilityFactors = TRUE,
+                             applySequenceabilityFactors = is.null(opt[["disable-sf"]]),
                              numCPU = opt[["threads"]],
                              plotting = TRUE)
 
