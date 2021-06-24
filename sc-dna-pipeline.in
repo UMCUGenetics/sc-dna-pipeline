@@ -10,13 +10,16 @@ options(scipen=9999)
 library(getopt, quietly=TRUE, warn.conflicts = FALSE)
 
 spec = matrix(c(
-  'blacklist-binsize',  'b', 1, "numeric",
-  'calling-binsize',    'c', 1, "numeric",
-  'help',               'h', 0, "logical",
-  'output-directory',   'o', 1, "character",
-  'reference-bsgenome', 'g', 1, "character",
-  'samplesheet',        'i', 1, "character",
-  'threads',            't', 1, "numeric"
+  'blacklist-binsize',       'b', 1, "numeric",
+  'calling-binsize',         'c', 1, "numeric",
+  'help',                    'h', 0, "logical",
+  'output-directory',        'o', 1, "character",
+  'reference-bsgenome',      'g', 1, "character",
+  'samplesheet',             'i', 1, "character",
+  'threads',                 't', 1, "numeric",
+  'minimum-number-of-reads', 'm', 1, "numeric ,
+  'bhattacharyya-threshold', 'B', 1, "numeric",
+  'spikiness-threshold',     'S', 1, "numeric"
 ), byrow=TRUE, ncol=4)
 
 opt = getopt(spec)
@@ -30,7 +33,10 @@ if (! is.null(opt$help) ) {
                "  --output-directory=ARG,   -o  Directory to store the pipeline's output.\n",
                "  --reference-bsgenome=ARG, -g  BSGenome R package to use as reference genome.\n",
                "  --samplesheet=ARG,        -i  Path to the samplesheet.\n",
-               "  --threads=ARG,            -t  Number of threads to use.\n"))
+               "  --threads=ARG,            -t  Number of threads to use.\n",
+               "  --minimum-number-of-reads -m  Exclude cells with less reads than this.\n",
+               "  --bhattacharyya-threshold -B  Percentage of worst cells to exclude.\n",
+               "  --spikiness-threshold     -S  Percentage of worst cells to exclude.\n"))
     quit()
 }
 
@@ -60,6 +66,9 @@ if (is.null(opt[["output-directory"]])) {
 if (is.null(opt[["blacklist-binsize"]])) { opt[["blacklist-binsize"]] = 100000 }
 if (is.null(opt[["calling-binsize"]]))   { opt[["calling-binsize"]] = 1000000 }
 if (is.null(opt[["threads"]]))           { opt[["threads"]] = 48 }
+if (is.null(opt[["minimum-number-of-reads"]])) { opt[["minimum-number-of-reads"]] = 200000 }
+if (is.null(opt[["bhattacharyya-threshold"]])) { opt[["bhattacharyya-threshold"]] = 10 }
+if (is.null(opt[["spikiness-threshold"]])) { opt[["spikiness-threshold"]] = 10 }
 if (is.null(opt[["reference-bsgenome"]])) {
     opt[["reference-bsgenome"]] = "BSgenome.Btaurus.UCSC.bosTau8"
 }
@@ -127,7 +136,10 @@ log.stderr.file <- paste0(opt[["output-directory"]], "/Calling.errors")
 sink(file=log.stdout.file, type = "output")
 sink(file=NULL, type = "message")
 
-excluded_samples  <- excludedCells (opt[["output-directory"]], samplesheet, plotOverlap=TRUE)
+excluded_samples  <- excludedCells (opt[["output-directory"]], samplesheet, plotOverlap=TRUE,
+                                    minimum_numer_of_reads=opt[["minimum_numer_of_reads"]],
+                                    threshold_bhattacharyya=opt[["bhattacharyya-threshold"]],
+                                    threshold_spikiness=opt[["spikiness-threshold"]])
 final_samplesheet <- removeCellsFromSamplesheet(samplesheet, excluded_samples)
 
 cat(paste0("Excluded samples:\n"))
