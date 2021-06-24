@@ -17,7 +17,7 @@ spec = matrix(c(
   'reference-bsgenome',      'g', 1, "character",
   'samplesheet',             'i', 1, "character",
   'threads',                 't', 1, "numeric",
-  'minimum-number-of-reads', 'm', 1, "numeric ,
+  'minimum-number-of-reads', 'm', 1, "numeric",
   'bhattacharyya-threshold', 'B', 1, "numeric",
   'spikiness-threshold',     'S', 1, "numeric"
 ), byrow=TRUE, ncol=4)
