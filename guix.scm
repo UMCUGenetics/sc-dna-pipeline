@@ -81,10 +81,10 @@ instead.")
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/UMCUGenetics/USCDtools.git")
-                  (commit "bf208d3f04212b51dcb0b89f2969a6cb4a519d93")))
+                  (commit "8f2ad0e90019dc3dbe43d54e8a17dff5c14ae87e")))
             (sha256
              (base32
-              "0s57k2p7q96f2cm6rrkikx5wklabjyazf9agm2kcdcr6njk6a594"))))
+              "1zw1xzldw8d5y9ff8ji4782ybr4g68q34a3c25w71wp8qwv6blhr"))))
    (build-system r-build-system)
    (native-inputs
     `(("r-knitr" ,r-knitr)))
@@ -113,9 +113,9 @@ sc-dna-pipeline.")
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/UMCUGenetics/sc-dna-pipeline.git")
-                  (commit "1337558b23461ec1c8c95302495f88acff2f15b0")))
+                  (commit "01996e82348b695e42736b33f28f28146abdb291")))
             (sha256
-             (base32 "0svwr30zbcq4m2272vf6g4sdqhczx0wjix6rgdwahkbxc7hg0rj7"))))
+             (base32 "0jz1kphs1qgcccbnm7gq1qmjghi37yzqs0bq1dvvmnv1wp4d9sw4"))))
    (build-system gnu-build-system)
    (arguments
     `(#:tests? #f ; There are no tests.
