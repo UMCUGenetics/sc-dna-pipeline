@@ -39,7 +39,8 @@ if (! is.null(opt$help) ) {
                "  --threads=ARG,                -t  Number of threads to use.\n",
                "  --minimum-number-of-reads=ARG -m  Exclude cells with less reads than this.\n",
                "  --bhattacharyya-threshold=ARG -B  Percentage of worst cells to exclude.\n",
-               "  --spikiness-threshold=ARG     -S  Percentage of worst cells to exclude.\n"))
+               "  --spikiness-threshold=ARG     -S  Percentage of worst cells to exclude.\n",
+               "  --disable-sf                  -a  Disable the application of sequenceability factors.\n"))
     quit()
 }
 
@@ -142,7 +143,7 @@ sink(file=log.stdout.file, type = "output")
 sink(file=NULL, type = "message")
 
 excluded_samples  <- excludedCells (opt[["output-directory"]], samplesheet, plotOverlap=TRUE,
-                                    minimum_numer_of_reads=opt[["minimum_numer_of_reads"]],
+                                    minimum_numer_of_reads=opt[["minimum-number-of-reads"]],
                                     threshold_bhattacharyya=opt[["bhattacharyya-threshold"]],
                                     threshold_spikiness=opt[["spikiness-threshold"]])
 final_samplesheet <- removeCellsFromSamplesheet(samplesheet, excluded_samples)
