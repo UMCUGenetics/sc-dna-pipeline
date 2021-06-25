@@ -143,7 +143,7 @@ sink(file=log.stdout.file, type = "output")
 sink(file=NULL, type = "message")
 
 excluded_samples  <- excludedCells (opt[["output-directory"]], samplesheet, plotOverlap=TRUE,
-                                    minimum_numer_of_reads=opt[["minimum-number-of-reads"]],
+                                    minimum_number_of_reads=opt[["minimum-number-of-reads"]],
                                     threshold_bhattacharyya=opt[["bhattacharyya-threshold"]],
                                     threshold_spikiness=opt[["spikiness-threshold"]])
 final_samplesheet <- removeCellsFromSamplesheet(samplesheet, excluded_samples)
